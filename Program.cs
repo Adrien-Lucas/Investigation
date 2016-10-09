@@ -4,6 +4,9 @@ using System.Threading;
 
 namespace Investigation
 {
+    //This class is the main class of the project that
+    //controls every techniq things like write text on screen
+
     internal class Program
     {
         //This void is the Program void called when the program launch
@@ -12,6 +15,7 @@ namespace Investigation
             Application.Instance.Run();
         }
 
+        //Write text at screen with a delay between each character, /n create a new line
         public static void WriteScreen(string text, int delay)
         {
             var lines = Regex.Split(text, "/n");
@@ -26,13 +30,15 @@ namespace Investigation
             }
         }
 
+        //Write a title
+        //Write text at screen with a delay between each character, /n create a new line
         public static void WriteScreen(string text, int delay, string title, bool fancy)
         {
             Console.Clear();
             if (fancy)
                 Console.WriteLine("==========================================================================");
 
-            //Centered title
+            //Center the title
             var pad = "";
             for (var i = 0; i < (74 - title.Length)/2; i++)
             {
@@ -44,9 +50,9 @@ namespace Investigation
                 Console.WriteLine("==========================================================================");
             Console.WriteLine("");
             WriteScreen(text, delay);
-            //Console.ReadLine();
         }
 
+        //Ask to the player to press a key (pause)
         public static void WaitKeyToContinue()
         {
             Console.WriteLine("");

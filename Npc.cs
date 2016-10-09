@@ -1,67 +1,78 @@
 ﻿namespace Investigation
 {
+    //This class contain all the infos about an npc
+    //They are plenty instance of this class
+
     internal class Npc
     {
-        private string Info = "";
-        public float Intimidate = Application.Instance.Randomizer.Next(0, 100);
-        public bool Male;
-        public string Name;
-        public float Persuade = Application.Instance.Randomizer.Next(0, 100);
-        public string Portrait;
-        public bool ToldInfo;
+        private string _info = ""; //know infos by the npc
+        public float Intimidate = Application.Instance.Randomizer.Next(0, 100); //Generate an intimidation score
+        public bool Male; //Sexe of the npc
+        public string Name; //Name of the npc
+        public float Persuade = Application.Instance.Randomizer.Next(0, 100); //Generate a persuade score
+        public string Portrait; //A simple portrait of the npc
+        public bool ToldInfo; //Has he already spoke everything ?
 
+        //Constructor that generate the npc
         public Npc()
         {
+            //Random sexe
             Male = Application.Instance.Randomizer.Next(0, 2) == 0;
 
-            string[] FirstName;
-            string[] LastName = {"Ellis", "Hamilton", "Walker", "Stewart", "Grimes", "Lloyd"};
-            string[] Adjectives;
+            //Name and portrait generation --
+            string[] firstName;
+            string[] lastName = {"Ellis", "Hamilton", "Walker", "Stewart", "Grimes", "Lloyd"};
+            string[] adjectives;
 
-            if (Male)
+            if (Male) //Names and adjectives depend of the sexe
             {
-                FirstName = new[] {"Tommy", "Dexter", "Ryan", "Frederick", "Cesar", "Arthur"};
-                Adjectives = new[] {"handsome", "stocky", "nervous", "ugly", "noble", "redneck"};
+                firstName = new[] {"Tommy", "Dexter", "Ryan", "Frederick", "Cesar", "Arthur"};
+                adjectives = new[] {"handsome", "stocky", "nervous", "ugly", "noble", "redneck"};
             }
             else
             {
-                FirstName = new[] {"Eloise", "Harriet", "Eva", "Caroline", "Abigail", "Lucy"};
-                Adjectives = new[] {"beautiful", "stocky", "nervous", "ugly", "noble", "redneck"};
+                firstName = new[] {"Eloise", "Harriet", "Eva", "Caroline", "Abigail", "Lucy"};
+                adjectives = new[] {"beautiful", "stocky", "nervous", "ugly", "noble", "redneck"};
             }
 
 
-            var first = Application.Instance.Randomizer.Next(0, FirstName.Length);
-            var last = Application.Instance.Randomizer.Next(0, LastName.Length);
-            var portrait = Application.Instance.Randomizer.Next(0, Adjectives.Length);
-            Name = FirstName[first] + " " + LastName[last];
-            Portrait = Name + " is a " + Adjectives[portrait] + " " + (Male ? "men" : "women") + "/n" +
+            var first = Application.Instance.Randomizer.Next(0, firstName.Length);
+            var last = Application.Instance.Randomizer.Next(0, lastName.Length);
+            var portrait = Application.Instance.Randomizer.Next(0, adjectives.Length);
+            Name = firstName[first] + " " + lastName[last];
+            Portrait = Name + " is a " + adjectives[portrait] + " " + (Male ? "men" : "women") + "/n" +
                        (Male ? "He" : "She") + " receives you";
+            //--
         }
 
+        //Set the var _info     Choose if the npc will tell the truth of not
         public void SetInfo()
         {
+            //Generate a truth score that will say if he sais truth or not
             var truthness = Application.Instance.Randomizer.Next(0, 100);
+            //He says truth and is not the murderer
             if (truthness <= 50 && Name != Application.Instance.Investigation.Properties.Murderer.Name)
-                Info = "I suspect " + Application.Instance.Investigation.Properties.Murderer.Name +
+                _info = "I suspect " + Application.Instance.Investigation.Properties.Murderer.Name +
                        " to be the murderer";
-            else
+            else //He tells you bullshit
             {
-                var otherNpcs = Application.Instance.Investigation.Properties.Suspects;
+                var otherNpcs = Application.Instance.Investigation.Properties.Suspects; //list of suspect without actual npc
                 otherNpcs.Remove(this);
                 var rand = Application.Instance.Randomizer.Next(0, otherNpcs.Count);
-                Info = "I suspect " + otherNpcs[rand].Name + " to be the murderer";
+                _info = "I suspect " + otherNpcs[rand].Name + " to be the murderer";
             }
         }
 
+        //Shows interrogation screen for this npc
         public void Interrogate()
         {
             Program.WriteScreen(Portrait, 25, "Interrogate " + Name, true);
 
-            if (!ToldInfo)
+            if (!ToldInfo) //Only if hasn't spoke already
             {
                 var choice = Application.Instance.DoAChoice("What do you want to ask ?",
                     new[] {"Intimidate", "Persuade", "Simply ask", "Get back"});
-                var result = Application.Instance.Randomizer.Next(0, 100);
+                var result = Application.Instance.Randomizer.Next(0, 100); //Generate a score that would determine chances of getting infos
 
                 Program.WriteScreen("", 0, "Answer", true);
 
@@ -108,17 +119,18 @@
                 else
                     Interrogate();
             }
-            else
+            else //If already told everything 
             {
-                Program.WriteScreen("I've already told you all I know/n" + Info, 25);
+                Program.WriteScreen("I've already told you all I know/n" + _info, 25);
                 Program.WaitKeyToContinue();
                 Application.Instance.Investigation.ShowNpcScreen();
             }
         }
 
+        //A simple shortcut
         public void TellInfo()
         {
-            Program.WriteScreen(Info, 50);
+            Program.WriteScreen(_info, 50);
             ToldInfo = true;
         }
     }

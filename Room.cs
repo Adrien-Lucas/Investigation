@@ -2,12 +2,16 @@
 
 namespace Investigation
 {
+    //This class contains all informations about a place, called room here
+    //They are plenty instance of this class
+
     internal class Room
     {
-        private readonly string _type = "house";
-        public List<string> Infos = new List<string>();
-        public string Name = "location";
+        private readonly string _type; //The type of place
+        public List<string> Infos = new List<string>(); //The infos contains here, could be multiple
+        public string Name; //Place name
 
+        //Constructor - Generate a room
         public Room()
         {
             // Generate name
@@ -18,6 +22,7 @@ namespace Investigation
             var second = Application.Instance.Randomizer.Next(0, Second.Length);
             Name = First[first] + " " + Second[second];
             _type = Second[second];
+            //--
 
             //Generate infos
             var rand = Application.Instance.Randomizer.Next(1, 4);
@@ -38,8 +43,10 @@ namespace Investigation
 
                 Infos.Add("A " + Object[o] + " that belongs to " + owner);
             }
+            //-
         }
 
+        //Shows the screen of searching place that gives you the infos contains
         public void Search()
         {
             Program.WriteScreen("You enter the " + _type + ". After a complete research, you have found :", 50,

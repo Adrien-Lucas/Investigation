@@ -3,9 +3,11 @@ using System.Diagnostics;
 
 namespace Investigation
 {
+    //This class generate and contains every informations about the investigation
+    //It generate the name of the investigation, the npcs, the rooms and choose a random murderer
+
     internal class InvestigationProperties
     {
-        public bool GenerationComplete;
         public Npc Murderer;
         public string Name;
         public List<Room> Rooms = new List<Room>();
@@ -15,28 +17,29 @@ namespace Investigation
         public InvestigationProperties()
         {
             //Generate name
-            string[] FirstTitles = {"The adventure of", "A night with", "Little murder by", "The conspiration of"};
-            string[] Pseudos = {"the Butcher", "the steel hands", "the shadow killer", "the gracious murderer"};
+            string[] firstTitles = {"The adventure of", "A night with", "Little murder by", "The conspiration of"};
+            string[] pseudos = {"the Butcher", "the steel hands", "the shadow killer", "the gracious murderer"};
 
-            var title = Application.Instance.Randomizer.Next(0, FirstTitles.Length);
-            var pseudo = Application.Instance.Randomizer.Next(0, Pseudos.Length);
-            Name = FirstTitles[title] + " " + Pseudos[pseudo];
+            var title = Application.Instance.Randomizer.Next(0, firstTitles.Length);
+            var pseudo = Application.Instance.Randomizer.Next(0, pseudos.Length);
+            Name = firstTitles[title] + " " + pseudos[pseudo];
 
-
-            var NpcsNb = Application.Instance.Randomizer.Next(2, 11);
             //Generate NPCs
-            for (var i = 0; i < NpcsNb; i++)
+            var npcsNb = Application.Instance.Randomizer.Next(2, 11);
+            for (var i = 0; i < npcsNb; i++)
             {
                 Suspects.Add(new Npc());
             }
+            //--
 
-            while (Suspects.Count < NpcsNb)
+
+            //Wait for all npcs to be create - Add to avoid a bug where murderer was choose but the generation wasn't over 
+            while (Suspects.Count < npcsNb)
             {
             }
-
-            GenerationComplete = true;
         }
 
+        //This finalize generation, this is in an over method to avoid the precedently said bug
         public void SetupFinalization()
         {
             //Select the Murderer
@@ -44,6 +47,8 @@ namespace Investigation
             Murderer = Suspects[randMurderer];
             Debug.WriteLine("THE MURDERER IS : " + Murderer.Name);
 
+            //Set the known info by each npc
+            //Did in a clone list to avoid list editing in for
             var newNpcs = new List<Npc>();
             for (var index = 0; index < Suspects.Count; index++)
             {
@@ -54,9 +59,9 @@ namespace Investigation
             }
             Suspects = newNpcs;
 
-            var RoomsNb = Application.Instance.Randomizer.Next(1, 6);
             //Generate rooms
-            for (var i = 0; i < RoomsNb; i++)
+            var roomsNb = Application.Instance.Randomizer.Next(1, 6);
+            for (var i = 0; i < roomsNb; i++)
             {
                 Rooms.Add(new Room());
             }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 
 namespace Investigation
@@ -71,14 +72,23 @@ namespace Investigation
 
             //wait for player answer
             var answer = Console.ReadLine();
-            var parsedResult = int.Parse(answer);
-            if (parsedResult < i + 1)
-                return parsedResult;
+            Debug.WriteLine("Ans : " + answer);
+
+            //Check for input validity, accepts only numbers between 1 and i+1
+            if (!string.IsNullOrEmpty(answer))
+            {
+                var parsedResult = int.Parse(answer);
+                if (parsedResult < i + 1 && parsedResult > 0)
+                    return parsedResult;
+
+                Program.WriteScreen("$Invalid input", 0);
+            }
+            else
+                Program.WriteScreen("$No input", 0);
+
             DoAChoice(question, choices);
 
             return 0;
-
-            //Should add an input verification
         }
     }
 }
